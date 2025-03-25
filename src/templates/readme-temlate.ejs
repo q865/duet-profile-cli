@@ -1,19 +1,74 @@
-# <%= name %> | Профиль разработчика
+# <%= name %> | Developer Profile
 
-## 📌 Основная информация
-- **Возраст:** <%= age %>
-- **Уровень:** <%= level %>
-- **Дата создания:** <%= new Date().toLocaleDateString() %>
-
-## 🛠 Технологический стек
+## Core Skills
+- **Level:** <%= level %>
+- **Experience:** <%= experience %>
+- **Main Stack:** 
 <% stack.forEach(tech => { %>
-- <%= tech %>
+  - <%= tech %>
 <% }); %>
 
-## 📊 Прогресс
+## Contact
+- GitHub: [<%= github %>](https://github.com/<%= github %>)
+- Created: <%= date %>
+
 ```mermaid
 pie
-    title Опыт работы
-    "Junior" : 30
-    "Middle" : 50
-    "Senior" : 20
+    title Technology Distribution
+    <% stack.forEach(tech => { %>
+    "<%= tech %>" : <%= Math.floor(Math.random() * 30) + 10 %>
+    <% }); %>
+#### 3. Улучшаем `src/cli.js`
+```javascript
+import inquirer from 'inquirer';
+import { generateProfile } from './profile-generator.js';
+import chalk from 'chalk';
+import gradient from 'gradient-string';
+import figlet from 'figlet';
+
+const QUESTIONS = [
+  {
+    type: 'input',
+    name: 'name',
+    message: 'Your name:',
+    validate: input => !!input || 'Name is required!'
+  },
+  {
+    type: 'list',
+    name: 'level',
+    message: 'Your level:',
+    choices: ['Junior', 'Middle', 'Senior']
+  },
+  {
+    type: 'checkbox',
+    name: 'stack',
+    message: 'Your tech stack:',
+    choices: [
+      'JavaScript', 
+      'TypeScript',
+      'React',
+      'Node.js',
+      'Styled Components'
+    ]
+  }
+];
+
+export async function runCLI() {
+  console.log(
+    gradient.rainbow(
+      figlet.textSync('DEV PROFILE', { horizontalLayout: 'full' })
+    )
+  );
+
+  try {
+    const answers = await inquirer.prompt(QUESTIONS);
+    await generateProfile(answers);
+    
+    console.log(chalk.green.bold('\n✔ Profile created!'));
+    console.log(chalk.blue('Check "duet-profile" directory\n'));
+    
+  } catch (err) {
+    console.error(chalk.red('\n✖ Error:'), err.message);
+    process.exit(1);
+  }
+}
