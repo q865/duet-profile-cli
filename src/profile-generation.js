@@ -1,9 +1,10 @@
 import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
 import ejs from "ejs";
 import chalk from "chalk";
 
-const TEMPLATES_DIR = path.join(process.cwd(), "src", "templates");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function generateProfile(data) {
   const profileDir = path.join(process.cwd(), "duet-profile");
@@ -11,22 +12,21 @@ export async function generateProfile(data) {
   try {
     await fs.mkdir(profileDir, { recursive: true });
 
-    // Генерация README
-    const readmeTemplate = await fs.readFile(
-      path.join(TEMPLATES_DIR, "readme-template.ejs"),
+    // 1. Генерация README.md из шаблона
+    const template = await fs.readFile(
+      path.join(__dirname, "../templates/readme-template.ejs"),
       "utf-8",
     );
-    const readmeContent = ejs.render(readmeTemplate, data);
+    const readmeContent = ejs.render(template, data);
 
-    await fs.writeFile(path.join(profileDir, "README.md"), readmeContent);
-
-    // Генерация JSON-профиля
+    // 2. Сохранение JSON-профиля
     await fs.writeFile(
       path.join(profileDir, "profile.json"),
       JSON.stringify(data, null, 2),
     );
 
-    console.log(chalk.green(`\n📁 Профиль сохранен в: ${profileDir}`));
+    // 3. Сохранение README.md
+    await fs.writeFile(path.join(profileDir, "README.md"), readmeContent);
   } catch (err) {
     console.error(chalk.red("Ошибка генерации:"), err);
     throw err;
