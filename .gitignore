@@ -1,0 +1,19 @@
+# Зависимости
+node_modules/
+
+# Логи и настройки
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Переменные окружения
+.env
+.env.local
+.env*.local
+
+# Сборка
+dist/
+build/
+.next/
+out/
