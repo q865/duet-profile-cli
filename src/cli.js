@@ -26,6 +26,12 @@ export async function runCLI() {
       validate: (input) => input > 0 || "Введите корректный возраст",
     },
     {
+      type: "input",
+      name: "experience",
+      message: 'Ваш опыт (например: "2 года"):',
+      default: "1 год",
+    },
+    {
       type: "list",
       name: "level",
       message: "📊 Ваш уровень:",
